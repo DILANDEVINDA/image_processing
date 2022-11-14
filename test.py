@@ -8,6 +8,19 @@ from PIL import Image
 import azure.cognitiveservices.speech as speechsdk
 from gtts import gTTS
 from playsound import  playsound
+from fastapi import FastAPI
+from typing import Optional
+from pydantic import BaseModel
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return{"Hello World"}
+
+@app.get("/test")
+def read_root():
+    return{"Good Morning"}
 
 path = './assets/test12.jpg'
 img = cv.imread(path)
@@ -18,7 +31,7 @@ pytesseract.pytesseract.tesseract_cmd =r'C:\Program Files\Tesseract-OCR\tesserac
 
 #cv.imshow("original", img)
 bill = rescaleFrame(img, 0.75)
-cv.imshow("Rescaled", bill)
+#cv.imshow("Rescaled", bill)
 
 noise_removal = noise_removal(img)
 
@@ -26,11 +39,11 @@ grayscale = grayscale(noise_removal)
 #cv.imshow("Grayscale", grayscale)
 
 thresh, im_bw = cv.threshold(grayscale, 130, 255, cv.THRESH_BINARY)
-cv.imshow("Thresh", im_bw)
+#cv.imshow("Thresh", im_bw)
 
 kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
 sharpen = cv2.filter2D(src=im_bw, ddepth=-1, kernel=kernel)
-cv.imshow("Sharpen", sharpen)
+#cv.imshow("Sharpen", sharpen)
 
 
 #erosion = erosion(opening)
@@ -41,7 +54,7 @@ cv.imshow("Sharpen", sharpen)
 #cv.imshow("Closing", closing)
 
 denoise = cv2.fastNlMeansDenoising(sharpen, None,  30, 7, 21)
-cv.imshow("Denoising", denoise)
+#cv.imshow("Denoising", denoise)
 
 #blur = cv.GaussianBlur(denoise, (3, 3), 0)
 #cv.imshow("Blur", blur)
@@ -50,12 +63,12 @@ cv.imshow("Denoising", denoise)
 
 blur = cv.GaussianBlur(denoise, (3, 3), 0)
 otsu = OtsuBbinarization(blur)
-cv.imshow("otsu", otsu)
+#cv.imshow("otsu", otsu)
 
 # cv.imshow("1", cv2.fastNlMeansDenoising(closing, None, 30, 7, 21))
 
 opening = opening(otsu)
-cv.imshow("Opening image1", opening)
+#cv.imshow("Opening image1", opening)
 
 erosion = erosion(opening)
 #cv.imshow("erosion image1", erosion)
@@ -84,12 +97,8 @@ otsu = OtsuBbinarization(blur)
 
 im = Image.fromarray(thick_font)
 ocr_result = pytesseract.image_to_string(im, lang='sin')
-print(ocr_result)
+#print(ocr_result)
 
 #cv.waitKey(0)
 
-mytext=ocr_result
-language='si'
-myobj=gTTS(text=mytext,lang=language,slow=False)
-myobj.save("welcome1.mp3")
-playsound("welcome1.mp3")
+
